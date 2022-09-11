@@ -45,6 +45,8 @@ No modules.
 | <a name="input_iam_role_path"></a> [iam\_role\_path](#input\_iam\_role\_path) | IAM role path | `string` | `"/"` | no |
 | <a name="input_iam_role_permissions_boundary"></a> [iam\_role\_permissions\_boundary](#input\_iam\_role\_permissions\_boundary) | ARN of the policy that is used to set the permissions boundary for the IAM role | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Common Tags for AWS resources | `map(string)` | n/a | yes |
+| <a name="update_trust_policy_assume_role"></a> [update_trust_policy_assume_role](#input\update_trust_policy_assume_role) | Assume role when updating EMR ( update-role-trust-policy) | `string` | null | no |
+
 
 ## Outputs
 

@@ -25,3 +25,8 @@ variable "iam_role_permissions_boundary" {
   type        = string
   default     = null
 }
+
+variable "update_trust_policy_assume_role" {
+  type = string
+  default = null
+}

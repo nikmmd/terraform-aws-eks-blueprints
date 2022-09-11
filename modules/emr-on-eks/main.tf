@@ -101,6 +101,22 @@ resource "aws_iam_role_policy_attachment" "custom" {
   policy_arn = local.emr_on_eks_team["additional_iam_policies"][count.index]
 }
 
+locals {
+  assume_role_cmd=<<EOF
+
+CREDENTIALS=`aws sts assume-role \
+--role-arn ${var.update_trust_policy_assume_role == null ? "" : var.update_trust_policy_assume_role } \
+--role-session-name "emr-containers-trust-updater" \
+--output json`
+
+unset AWS_PROFILE
+export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq -r '.Credentials''.AccessKeyId');
+export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq -r '.Credentials''.SecretAccessKey');
+export AWS_SESSION_TOKEN=$(echo $CREDENTIALS | jq -r '.Credentials''.SessionToken');
+  
+EOF
+}
+
 # TODO Replace this resource once the provider is available for aws emr-containers
 resource "null_resource" "update_trust_policy" {
   provisioner "local-exec" {
@@ -110,6 +126,8 @@ resource "null_resource" "update_trust_policy" {
     }
     command = <<EOF
 set -e
+
+${var.update_trust_policy_assume_role != null ? local.assume_role_cmd : ""}
 
 aws emr-containers update-role-trust-policy \
 --cluster-name ${var.eks_cluster_id} \
